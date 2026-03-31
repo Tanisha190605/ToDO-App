@@ -5,9 +5,14 @@ router.get('/', (req, res) => {
     res.send("Todo route working");
 });
 
-const { getTodos, createTodo} = require('../controllers/todo.controller');
+const { getTodos, createTodos, updateTodo, deleteTodo} = require('../controllers/todo.controller');
      
-router.get('/', getTodos);
-router.post('/', createTodo);  
+//const showLog= require('../middleware/log.middleware');
+const {validateTodo} = require('../middleware/validateTodo.middleware');
 
-module.exports = router;
+router.get('/',getTodos);
+router.post('/', validateTodo, createTodos);  
+router.put('/:id', updateTodo);
+router.delete('/:id',  deleteTodo);
+
+module.exports = router;    
