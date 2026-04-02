@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const todoRoutes = require('./routes/todo.route');
 const cookieParser = require('cookie-parser');
-// const session = require('express-session');  
+const session = require('express-session');  
 
 app.use(express.json());
 
@@ -18,12 +18,28 @@ app.get("/get-cookie", (req, res) => {
     res.json(req.cookies);
 });
 
-// app.use(session({
-// secret: "my-secret-key",
-// resave: false,
-// saveUninitialized: true,
-// cookie: { secure: false }
-// }));
+app.use(session({
+secret: "my-secret-key",
+resave: false,
+saveUninitialized: true,
+
+}));
 
 app.use('/api/todos', todoRoutes);
+
+app.post('/login', (req, res) => {
+    const { username} = req.body;
+    req.session.user = username;
+    res.send("Login successful");
+});
+
+app.get('/profile', (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).send("Unauthorized");
+    }
+    res.send(`Welcome, ${req.session.user}`);
+});
+
+
+
 module.exports = app;
